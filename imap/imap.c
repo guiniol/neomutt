@@ -1133,7 +1133,7 @@ static int sync_helper (IMAP_DATA* idata, int right, int flag, const char* name)
   if (!idata->ctx)
     return -1;
 
-  if (!mutt_bit_isset (idata->ctx->rights, right))
+  if (!idata->ctx || !mutt_bit_isset (idata->ctx->rights, right))
     return 0;
 
   if (right == M_ACL_WRITE && !imap_has_flag (idata->flags, name))
