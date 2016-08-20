@@ -1,0 +1,12 @@
+# Colours GPGME checked signatures depending on the results
+
+color   attach_regexp     brightgreen     default        "Good signature from.*"
+color   attach_regexp     brightred       default        "Bad signature from.*"
+color   attach_regexp     brightred       default        "BAD signature from.*"
+color   attach_regexp     brightred       default        "Note: This key has expired!"
+color   attach_regexp     brightmagenta   default        "WARNING: This key is not certified with a trusted signature!"
+color   attach_regexp     brightmagenta   default        "         There is no indication that the signature belongs to the owner."
+color   attach_regexp     brightmagenta   default        "can't handle these multiple signatures"
+color   attach_regexp     brightmagenta   default        "signature verification suppressed"
+color   attach_regexp     brightmagenta   default        "invalid node with packet of type"
+
