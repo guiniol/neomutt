@@ -904,27 +904,34 @@ static void init_menu (struct browser_state *state, MUTTMENU *menu, char *title,
     menu->is_mailbox_list = 0;
     strfcpy (path, LastDir, sizeof (path));
     mutt_pretty_mailbox (path, sizeof (path));
+  if (mutt_strncmp(LastDir, OldLastDir, mutt_strlen(LastDir)) == 0)
+  {
+    char TargetDir[_POSIX_PATH_MAX] = "";
 #ifdef USE_IMAP
-  if (state->imap_browse && option (OPTIMAPLSUB)) {
-    char *p = strrchr (OldLastDir, '/');
-    if (p && ((p - OldLastDir) == mutt_strlen (LastDir)) &&
-       (mutt_strncmp (LastDir, OldLastDir, p - OldLastDir) == 0)) {
-      /* If we get here, it means that LastDir is the parent directory of
-       * OldLastDir.  I.e., we're returning from a subdirectory, and we want
-       * to position the cursor on the directory we're returning from. */
-      int i;
-      for (i = 0; i < state->entrymax; i++) {
-        if (mutt_strcmp (state->entry[i].name, p + 1) == 0) {
-          menu->current = i;
-        }
+    if (state->imap_browse)
+    {
+      strfcpy(TargetDir, OldLastDir, sizeof (TargetDir));
+      TargetDir[strlen(TargetDir) - 1] = '\0';
+    }
+    else
+#endif
+      strfcpy(TargetDir,
+               strrchr(OldLastDir, '/') + 1,
+               sizeof (TargetDir));
+        
+    /* If we get here, it means that LastDir is the parent directory of
+     * OldLastDir.  I.e., we're returning from a subdirectory, and we want
+     * to position the cursor on the directory we're returning from. */
+    int i;
+    for (i = 0; i < state->entrylen; i++) {
+      dprint(5, (debugfile, "Entry, Target: %s, %s\n", state->entry[i].name, TargetDir));
+      if (mutt_strcmp (state->entry[i].name, TargetDir) == 0) {
+        menu->current = i;
       }
     }
-    snprintf (title, titlelen, _("Directory [%s], File mask: %s"),
-             path, NONULL(Mask.pattern));
-  } else
-#endif
-    snprintf (title, titlelen, _("Directory [%s], File mask: %s"),
-	      path, NONULL(Mask.pattern));
+  }
+  snprintf(title, titlelen, _("Directory [%s], File mask: %s"),
+	   path, NONULL(Mask.pattern));
   }
   menu->redraw = REDRAW_FULL;
 }
